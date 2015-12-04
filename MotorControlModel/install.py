@@ -51,7 +51,7 @@ def installMissingPackage(packageList):
             os.system('sudo pip3 install distlib')
         except:
             pass
-    os.system('clear')
+    '''os.system('clear')'''
 
 pk = checkPackages()
 installMissingPackage(pk)

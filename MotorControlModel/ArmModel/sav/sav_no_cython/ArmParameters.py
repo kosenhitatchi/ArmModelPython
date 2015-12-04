@@ -15,7 +15,7 @@ class ArmParameters:
     '''
     class ArmParameters
     '''
-    
+
     def __init__(self):
         '''
         Intializes the class

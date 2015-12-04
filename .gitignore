@@ -1,0 +1,16 @@
+
+### Development files ###
+
+*.pyc
+
+MotorControlModel/ArmModel/build/*
+MotorControlModel/ArmModel/DevCython/*
+*.pdf
+
+/MotorControlModel/ArmModel/build
+*.c
+
+
+*~
+.idea/
+
