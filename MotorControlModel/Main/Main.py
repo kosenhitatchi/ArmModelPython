@@ -15,7 +15,6 @@ from shutil import copyfile
 from multiprocessing.pool import Pool
 
 from Utils.ReadSetupFile import ReadSetupFile
-from Utils.ThetaNormalization import normalization, unNormalization
 from Utils.Chrono import Chrono
 
 from ArmModel.Arm import Arm
@@ -30,7 +29,7 @@ def copyRBFNtoCMAES(rs, name, size):
     copyfile(savenamestruct, cmaname + name + ".struct")
 
 def GenerateDataFromTheta(rs, sizeOfTarget, foldername, thetaFile, repeat, save):
-    exp = Experiments(rs, sizeOfTarget, save, foldername,thetaFile)
+    exp = Experiments(rs, sizeOfTarget, save, foldername,thetaFile,rs.popsizeCmaes,rs.period)
     cost, time = exp.runTrajectoriesForResultsGeneration(repeat)
     print("Average cost: ", cost)
     print("Average time: ", time)
@@ -39,7 +38,7 @@ def GenerateDataFromTheta(rs, sizeOfTarget, foldername, thetaFile, repeat, save)
         exp.saveCost()
 
 def GenerateRichDataFromTheta(rs, sizeOfTarget, foldername, thetaFile, repeat, save):
-    exp = Experiments(rs, sizeOfTarget, save, foldername,thetaFile)
+    exp = Experiments(rs, sizeOfTarget, save, foldername,thetaFile,rs.popsizeCmaes,rs.period)
     cost = exp.runRichTrajectories(repeat)
     print("Average cost: ", cost)
     print("foldername : ", foldername)
@@ -92,28 +91,21 @@ def launchCMAESForSpecificTargetSize(sizeOfTarget, thetaFile, save):
         copyRBFNtoCMAES(rs, thetaFile, sizeOfTarget)
 
     #Initializes all the class used to generate trajectory
-    exp = Experiments(rs, sizeOfTarget, False, foldername, thetaname)
-    exp.popSize = rs.popsizeCmaes
+    exp = Experiments(rs, sizeOfTarget, False, foldername, thetaname,rs.popsizeCmaes,rs.period)
     theta = exp.tm.controller.theta
-    thetaIn = theta.flatten()
-    #print ("theta avant normalisation: ", thetaIn)
-    #np.savetxt("CMAunnorm", thetaIn)
-    thetaCMA, minT, maxT = normalization(thetaIn)
-    exp.minT = minT
-    exp.maxT = maxT
-    #print ("max normalisation :", maxT)
-    #print ("theta normalise (pour CMA) : ", thetaCMA)
-    #np.savetxt("CMAnorm", thetaCMA)
-
+    thetaCMA = theta.flatten()
 
     #run the optimization (cmaes)
-    resCma = cma.fmin(exp.runTrajectoriesCMAES, thetaCMA, rs.sigmaCmaes, options={'maxiter':rs.maxIterCmaes, 'popsize':rs.popsizeCmaes, 'CMA_diagonal':True})
+    resCma = cma.fmin(exp.runTrajectoriesCMAES, thetaCMA, rs.sigmaCmaes, options={'maxiter':rs.maxIterCmaes, 'popsize':rs.popsizeCmaes, 'CMA_diagonal':True, 'verb_log':50, 'verb_disp':1,'termination_callback':term()})
     print("End of optimization for target " + str(sizeOfTarget) + " !")
     
 def launchCMAESForAllTargetSizes(thetaname, save):
     rs = ReadSetupFile()
     for el in rs.sizeOfTarget:
         launchCMAESForSpecificTargetSize(el, thetaname,save)
+
+def term():
+    return False
 
 #--------------------------- multiprocessing -------------------------------------------------------
     

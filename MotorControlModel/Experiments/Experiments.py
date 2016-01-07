@@ -12,7 +12,7 @@ import cma
 
 import numpy as np
 
-from Utils.ThetaNormalization import normalization, unNormalization
+#from Utils.ThetaNormalization import normalization, unNormalization
 from Utils.ReadSetupFile import ReadSetupFile
 from Utils.FileReading import dicToArray, getInitPos
 from Utils.Chrono import Chrono
@@ -38,7 +38,7 @@ def findDataFilename(foldername, name, extension):
 #------------------------------------------------------------------------------
 
 class Experiments:
-    def __init__(self, rs, sizeOfTarget, saveTraj, foldername, thetafile):
+    def __init__(self, rs, sizeOfTarget, saveTraj, foldername, thetafile, popSize, period):
         '''
     	Initializes parameters used to run functions below
     
@@ -55,32 +55,26 @@ class Experiments:
         self.tm = TrajMaker(rs, sizeOfTarget, saveTraj, thetafile)
         self.posIni = np.loadtxt(pathDataFolder + rs.experimentFilePosIni)
         self.costStore = []
-        self.CMAEScostStore = []
+        self.CMAESCostStore = []
         self.CMAESTimeStore = []
         self.trajTimeStore = []
         self.bestCost = -10000.0
         self.lastCoord = []
-        self.maxT = 1
-        self.minT = -1
-        self.popSize = 0
-
-    def setTheta(self, theta):
-        self.tm.setTheta(theta)
+        self.popSize = popSize
+        self.period = period
+        
+    def printLastCoordInfo(self):
+        vec = np.array(self.lastCoord)
+        print "moyenne :", np.mean(vec)
+        print "min :", np.min(vec)
+        print "max :", np.max(vec)
     
     def initTheta(self, theta):
         '''
      	Input:		-theta: controller ie vector of parameters, numpy array
     	'''
-        self.theta = theta
-        #print ("theta from CMA normalized : ", self.theta)
-        #reshaping of the parameters vector because this function is used by the cmaes algorithm and 
-        #cmaes feeds the function with a one dimension numpy array but in the rest of the algorithm the 2 dimensions numpy array is expected for the vector of parameters theta
-        th = unNormalization(self.theta, self.minT, self.maxT)
-        #print ("theta init unnormalized : ", th)
-        self.theta = np.asarray(th).reshape((self.dimOutput, self.numfeats**self.dimState))
-        #print ("theta reconstructed : ", self.theta)
-
-        self.setTheta(self.theta)
+        self.theta = np.asarray(theta).reshape((self.dimOutput, self.numfeats**self.dimState))
+        self.tm.setTheta(self.theta)
 
     def saveCost(self):
         filename = findDataFilename(self.foldername+"Cost/","traj",".cost")
@@ -126,6 +120,7 @@ class Experiments:
             self.trajTimeStore.append([xy[0], xy[1], meanTrajTime])
             globCost.append(meanCost)
             globTime.append(meanTrajTime)
+        #self.printLastCoordInfo()
         return np.mean(globCost), np.mean(globTime)
     
     def runTrajectoriesCMAES(self, theta):
@@ -138,6 +133,11 @@ class Experiments:
     	'''
         if (self.call==0):
             self.localBestCost = -1000000.0
+            self.localWorstCost = 1000000.0
+            self.localBestTime = -1000000.0
+            self.localWorstTime = 1000000.0
+            self.periodMeanCost = 0.0
+            self.periodMeanTime = 0.0
         c = Chrono()
         self.initTheta(theta)
         #print "theta avant appel :", theta
@@ -152,7 +152,15 @@ class Experiments:
 
         if meanCost>self.localBestCost:
             self.localBestCost = meanCost
-            self.localTimeBest = meanTime
+
+        if meanTime>self.localBestTime:
+            self.localBestTime = meanTime
+
+        if meanCost<self.localWorstCost:
+            self.localWorstCost = meanCost
+
+        if meanTime<self.localWorstTime:
+            self.localWorstTime = meanTime
 
         if meanCost>self.bestCost:
             self.bestCost = meanCost
@@ -160,16 +168,21 @@ class Experiments:
                 extension = ".save" + str(meanCost)
                 filename = findDataFilename(self.foldername+"Theta/", "theta", extension)
                 np.savetxt(filename, self.theta)
+        
+        self.periodMeanCost += meanCost
+        self.periodMeanTime += meanTime
 
         self.call += 1
-        self.call = self.call%self.popSize
+        self.call = self.call%self.period
 
         if (self.call==0):
-            self.CMAEScostStore.append(self.localBestCost)
-            self.CMAESTimeStore.append(self.localTimeBest)
+            self.periodMeanCost = self.periodMeanCost/self.period
+            self.periodMeanTime = self.periodMeanTime/self.period
+            self.CMAESCostStore.append((self.localWorstCost,self.periodMeanCost,self.localBestCost))
+            self.CMAESTimeStore.append((self.localWorstTime,self.periodMeanTime,self.localBestTime))
             costfoldername = self.foldername+"Cost/"
             checkIfFolderExists(costfoldername)
-            np.savetxt(costfoldername+"cmaesCost.log",self.CMAEScostStore) #Note: inefficient, should rather add to the file
+            np.savetxt(costfoldername+"cmaesCost.log",self.CMAESCostStore) #Note: inefficient, should rather add to the file
             np.savetxt(costfoldername+"cmaesTime.log",self.CMAESTimeStore) #Note: inefficient, should rather add to the file
 
         return 10.0*(self.rs.rhoCF-meanCost)/self.rs.rhoCF

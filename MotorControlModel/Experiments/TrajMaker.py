@@ -23,7 +23,7 @@ from Utils.FileReading import getStateAndCommandData, dicToArray,stateAndCommand
 from CostComputation import CostComputation
 from StateEstimator import StateEstimator
 
-from GlobalVariables import BrentTrajectoriesFolder,pathDataFolder
+from GlobalVariables import BrentTrajectoriesFolder,pathDataFolder,det 
 
 def checkFolder(name):
     if not os.path.isdir(name):
@@ -117,7 +117,7 @@ class TrajMaker:
             if coordHand[0] >= -self.sizeOfTarget/2 and coordHand[0] <= self.sizeOfTarget/2:
                 cost += np.exp(-t/self.rs.gammaCF)*self.rs.rhoCF
             else:
-                cost -= 500000*(coordHand[0]*coordHand[0])
+                cost -= 500+500000*(coordHand[0]*coordHand[0])
         else:
             cost -= 4000
         
@@ -149,8 +149,9 @@ class TrajMaker:
         self.stateEstimator.initStore(state)
         self.arm.setState(state)
         estimState = state
-        #estimState = np.array([0.2, 0.2, 0.2, 0.2])
         dataStore = []
+        qtarget1, qtarget2 = self.arm.mgi(self.rs.XTarget, self.rs.YTarget)
+        vectarget = [0.0, 0.0, qtarget1, qtarget2]
 
         #loop to generate next position until the target is reached 
         while coordHand[1] < self.rs.YTarget and i < self.rs.numMaxIter:
@@ -159,17 +160,24 @@ class TrajMaker:
             #print ("state :",self.arm.state)
 
             U = self.controller.computeOutput(estimState)
-            U = muscleFilter(U)
 
-            Unoisy = getNoisyCommand(U,self.arm.musclesP.knoiseU)
-            #Unoisy = muscleFilter(U)
+            if det:
+                Unoisy = muscleFilter(U)
+            else:
+                Unoisy = getNoisyCommand(U,self.arm.musclesP.knoiseU)
+                Unoisy = muscleFilter(Unoisy)
             #computation of the arm state
             realNextState = self.arm.computeNextState(Unoisy, self.arm.state)
  
             #computation of the approximated state
-            tmpstate = self.arm.state
-            estimNextState = self.stateEstimator.getEstimState(tmpstate,U)
-            #estimNextState = realNextState
+            tmpState = self.arm.state
+
+            if det:
+                estimNextState = realNextState
+            else:
+                U = muscleFilter(U)
+                estimNextState = self.stateEstimator.getEstimState(tmpState,U)
+            
             #print estimNextState
 
             self.arm.setState(realNextState)
@@ -191,18 +199,17 @@ class TrajMaker:
             '''
 
             #get dotq and q from the state vector
-            dotq, q = getDotQAndQFromStateVector(realNextState)
+            dotq, q = getDotQAndQFromStateVector(tmpState)
+            coordElbow, coordHand = self.arm.mgdFull(q)
             #print ("dotq :",dotq)
             #computation of the coordinates to check if the target is reach or not
             #code to save data of the trajectory
 
             #Note : these structures might be much improved
-            if self.saveTraj == True:
-                qt1, qt2 = self.arm.mgi(self.rs.XTarget, self.rs.YTarget)
- 
-                stepStore.append([0.0, 0.0, qt1, qt2])
+            if self.saveTraj == True: 
+                stepStore.append(vectarget)
                 stepStore.append(estimState)
-                stepStore.append(tmpstate)
+                stepStore.append(tmpState)
                 stepStore.append(Unoisy)
                 stepStore.append(np.array(U))
                 stepStore.append(estimNextState)
@@ -216,7 +223,6 @@ class TrajMaker:
                 dataStore.append(row)
 
             estimState = estimNextState
-            coordElbow, coordHand = self.arm.mgdFull(q)
             i += 1
             t += self.rs.dt
 

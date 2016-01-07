@@ -699,8 +699,8 @@ def plotScattergram(what,foldername):
         for i in range(len(rs.sizeOfTarget)):
             ax = plt.subplot2grid((2,2), (i/2,i%2))
             ax.hist(data[rs.sizeOfTarget[i]], 20)
-            ax.plot([-rs.sizeOfTarget[i], -rs.sizeOfTarget[i]], [0, 500], c = 'r', linewidth = 3)
-            ax.plot([rs.sizeOfTarget[i], rs.sizeOfTarget[i]], [0, 500], c = 'r', linewidth = 3)
+            ax.plot([-rs.sizeOfTarget[i]/2, -rs.sizeOfTarget[i]]/2, [0, 500], c = 'r', linewidth = 3)
+            ax.plot([rs.sizeOfTarget[i]/2, rs.sizeOfTarget[i]]/2, [0, 500], c = 'r', linewidth = 3)
             ax.set_title(str("Hit Dispersion for Target " + str(rs.sizeOfTarget[i])))
 
     elif what=="RBFN":
@@ -712,8 +712,8 @@ def plotScattergram(what,foldername):
                     tabx.append(el[j])
             plt.hist(tabx, 20)
             for i in range(len(rs.sizeOfTarget)):
-                plt.plot([-rs.sizeOfTarget[i], -rs.sizeOfTarget[i]], [0, 20], c = 'r', linewidth = 3)
-                plt.plot([rs.sizeOfTarget[i], rs.sizeOfTarget[i]], [0, 20], c = 'r', linewidth = 3)
+                plt.plot([-rs.sizeOfTarget[i]/2, -rs.sizeOfTarget[i]]/2, [0, 20], c = 'r', linewidth = 3)
+                plt.plot([rs.sizeOfTarget[i]/2, rs.sizeOfTarget[i]]/2, [0, 20], c = 'r', linewidth = 3)
             plt.xlabel("X (m)")
             plt.ylabel("Y (m)")
             plt.title("Hit Dispersion for RBFN")
@@ -736,11 +736,15 @@ def plotCMAESCostProgress():
         name = rs.CMAESpath + str(rs.sizeOfTarget[i]) + "/Cost/cmaesCost.log"
         data = np.loadtxt(name)
 
-        x,y = [],[]
+        x,w,m,b = [],[],[],[]
         for j in range(len(data)):
             x.append(j)
-            y.append(data[j])
-        ax.plot(x, y, c = 'b')
+            w.append(data[j][0])
+            m.append(data[j][1])
+            b.append(data[j][2])
+        ax.plot(x, w, c = 'b')
+        ax.plot(x, m, c = 'g')
+        ax.plot(x, b, c = 'r')
 
         ax.set_title(str("Cost Target " + str(rs.sizeOfTarget[i])))
 
@@ -757,11 +761,15 @@ def plotCMAESTimeProgress():
         name = rs.CMAESpath + str(rs.sizeOfTarget[i]) + "/Cost/cmaesTime.log"
         data = np.loadtxt(name)
 
-        x,y = [],[]
+        x,w,m,b = [],[],[],[]
         for j in range(len(data)):
             x.append(j)
-            y.append(data[j])
-        ax.plot(x, y, c = 'r')
+            w.append(data[j][0])
+            m.append(data[j][1])
+            b.append(data[j][2])
+        ax.plot(x, w, c = 'b')
+        ax.plot(x, m, c = 'g')
+        ax.plot(x, b, c = 'r')
 
         ax.set_title(str("Time Target " + str(rs.sizeOfTarget[i])))
 
