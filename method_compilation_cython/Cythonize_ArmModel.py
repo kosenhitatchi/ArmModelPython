@@ -1,13 +1,13 @@
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
-
-extensions = [
-    Extension("MuscularActivation", ["MuscularActivation.pyx"]),
-    Extension("MusclesParameters", ["MusclesParameters.pyx"]),
-    Extension("ArmParameters", ["ArmParameters.pyx"]),
-    Extension("Arm", ["Arm.pyx"]),
-   ]
+#
+# extensions = [
+#     Extension("MuscularActivation", ["MuscularActivation.pyx"]),
+#     Extension("MusclesParameters", ["MusclesParameters.pyx"]),
+#     Extension("ArmParameters", ["ArmParameters.pyx"]),
+#     Extension("Arm", ["Arm.pyx"]),
+#    ]
 
 
 '''
@@ -15,9 +15,10 @@ extensions = [
         python Cythonize_ArmModel.py build_ext --inplace
 '''
 setup(
-
-    #  ext_modules = cythonize("DevCython/*.pyx") # Complile all *.pyx file in this folder
-    ext_modules = cythonize(extensions)
+	name = 'my cython app',
+	#  ext_modules = cythonize("DevCython/*.pyx") # Complile all *.pyx file in this folder
+	# ext_modules = cythonize(extensions)
+	ext_modules = cythonize("MotorControlModel/ArmModel/*.pyx")
 )
 
 '''
