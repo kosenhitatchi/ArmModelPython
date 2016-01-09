@@ -1,0 +1,6 @@
+
+-----------------A Faire ----------------
+
+Rendre le path de compilation relatif a la position du fichier CythonizeX.py
+Comprendre pourquoi "python testArmModel.py" ne fonctionne pas correctement
+

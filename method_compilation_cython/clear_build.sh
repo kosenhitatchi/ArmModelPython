@@ -5,4 +5,5 @@ rm -fr build/
 find . -name "*.pyc" -type f -delete # clear all *.pyc in the subdirectory (compiled python file resulted from execution) 
 find . -name "*.so" -type f -delete  # clear all *.so in the subdirectory (cython compiled files)
 
+find . -name "*~" -type f -delete  # clear all *~ temps files
 

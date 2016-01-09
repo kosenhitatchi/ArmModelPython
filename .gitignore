@@ -2,7 +2,9 @@
 ### Development files ###
 
 *.pyc
+*.o
 
+build/*
 MotorControlModel/ArmModel/build/*
 MotorControlModel/ArmModel/DevCython/*
 *.pdf
