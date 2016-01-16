@@ -1,6 +1,7 @@
 Ici se trouve les methodes pour compiler du code cython
 
 @Todo : rendre le path de compilation relatif.
+	-> regarder du cote de la librairie os.path (import os.path)
 
 ex : Cythonize_ArmModel.py
 

@@ -1,8 +1,10 @@
 
 ### Development files ###
 
+log_cythonisation.txt
 *.pyc
 *.o
+*.so
 
 build/*
 MotorControlModel/ArmModel/build/*
