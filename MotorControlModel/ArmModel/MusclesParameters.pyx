@@ -9,8 +9,8 @@ Module: MusclesParameters
 Description:    -We find here all muscles parameters
                 -we use a model of arm with two joints and six muscles
 '''
-cimport MusclesParameters
-from MusclesParameters cimport MusclesParameters
+# cimport MusclesParameters
+#from MusclesParameters cimport MusclesParameters
 
 import numpy as np
 cimport numpy as np # import special compile-time information about the numpy module for cython

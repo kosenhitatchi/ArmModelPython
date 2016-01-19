@@ -1,37 +1,38 @@
 import numpy as np
 import os
 
+import ArmModel
+
 print("--------------Muscles---------------")
 
-print("--toto--")
-
-import ArmModel
 from ArmModel import MusclesParameters as MusclesParam
-from ArmModel import ArmParameters as ArmParam
-# from ArmModel import Arm
-
 
 Muscles = MusclesParam.MusclesParameters()
 
 print("--------------ArmParam---------------")
 
+from ArmModel import ArmParameters as ArmParam
+
 ArmParam = ArmParam.ArmParameters()
 
 print("--------------Arm---------------")
+
 
 U = np.array([0,1,2,3,4,5])
 state = np.array([00,11,22,33])
 
 print(U,state)
 
-# import ArmModel.Arm
-# arm1 = Arm.Arm()
+print("     ---------Arm cython---------")
 
-# dotq1,q1 = ArmModel.Arm.getDotQAndQFromStateVector(state)
-# print dotq1
-# print q1
+from ArmModel import Arm as Arm
+arm1 = Arm.Arm()
 
-# print ("Compute Next state : ",arm1.computeNextState(U, state))
+dotq1,q1 = ArmModel.Arm.getDotQAndQFromStateVector(state)
+print dotq1
+print q1
+
+print ("Compute Next state : ",arm1.computeNextState(U, state))
 
 
 

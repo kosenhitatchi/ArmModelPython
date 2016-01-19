@@ -1,7 +1,7 @@
 import numpy as np
 cimport numpy as np # import special compile-time information about the numpy module for cython
 
-cdef class ArmParameters :
+cdef class ArmParameters:
     '''
     class ArmParameters
     '''

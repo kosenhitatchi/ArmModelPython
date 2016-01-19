@@ -13,8 +13,15 @@ import numpy as np
 cimport numpy as np # import special compile-time information about the numpy module for cython
 
 import math
-cimport Arm
-from Arm cimport Arm
+
+# cimport Arm
+# from Arm cimport Arm
+
+from ArmModel import MusclesParameters
+from MusclesParameters cimport MusclesParameters as MusclesParam
+
+from ArmModel import ArmParameters
+from ArmParameters cimport ArmParameters as ArmParam
 
 # @todo : define the proper output type
 cpdef getDotQAndQFromStateVector( np.ndarray state):
@@ -43,8 +50,9 @@ cdef class Arm:
     def __init__(self):
         print("init Arm")
         self.__dotq0 = np.array([0.,0.])
-        self.armP = ArmParameters()
-        self.musclesP = MusclesParameters()
+
+        self.armP = ArmParam.ArmParameters()
+        self.musclesP = MusclesParam.MusclesParameters()
 
     cpdef setState(self, np.ndarray state):
         self.state = state

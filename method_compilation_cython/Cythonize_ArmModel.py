@@ -34,7 +34,7 @@ setup(
 )
 
 '''
-###### Important ####
+###### Important ####git stgit sta
 
 The *.so files have to be at the root of the package folder (here /ArmModel),
 otherwise it wont be possible to import them with : import ArmModel;

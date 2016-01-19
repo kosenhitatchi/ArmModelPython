@@ -9,8 +9,8 @@ Module: ArmParameters
 Description:    -We find here all arm parameters
                 -we use a model of arm with two joints and six muscles
 '''
-cimport ArmParameters
-from ArmParameters cimport ArmParameters
+# cimport ArmParameters
+#from ArmParameters cimport ArmParameters
 
 import numpy as np
 cimport numpy as np # import special compile-time information about the numpy module for cython

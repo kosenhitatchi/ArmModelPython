@@ -1,16 +1,18 @@
 import numpy as np
 cimport numpy as np # import special compile-time information about the numpy module for cython
 
-import MusclesParameters  # cython equivalent to c *.h
-from MusclesParameters cimport MusclesParameters
-# from . cimport MusclesParameters
+# from ArmModel import MusclesParameters
+# from MusclesParameters cimport MusclesParameters as MusclesParam
+#
+# from ArmModel import ArmParameters
+# from ArmParameters cimport ArmParameters as ArmParam
+
+import MusclesParameters
+cimport MusclesParameters as MusclesParam
 
 import ArmParameters
-from ArmParameters cimport ArmParameters
-# from . cimport ArmParameters
+cimport ArmParameters as ArmParam
 
-# from ArmModel import MusclesParameters as MusclesParam
-# from ArmModel import ArmParameters as ArmParam
 
 cdef class Arm:
     '''
@@ -22,8 +24,9 @@ cdef class Arm:
     cdef np.ndarray state #numpy array, state vector
     cdef np.ndarray __dotq0
     cdef float dt # Pas de temps utilise pour l'experimentation
-    cdef ArmParameters armP
-    cdef MusclesParameters musclesP
+    cdef ArmParam.ArmParameters armP
+    cdef MusclesParam.MusclesParameters musclesP
+
 
     # Function
 
