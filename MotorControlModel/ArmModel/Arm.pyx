@@ -21,7 +21,7 @@ from ArmModel.ArmParameters cimport ArmParameters
 
 
 # @todo : define the proper output type
-cpdef getDotQAndQFromStateVector( np.ndarray state):
+cpdef getDotQAndQFromStateVector(np.ndarray state):
       '''
       Returns dotq and q from the state vector state
 
@@ -53,6 +53,9 @@ cdef class Arm:
 
     cpdef setState(self, np.ndarray state):
         self.state = state
+
+    cpdef np.ndarray getState(self):
+        return self.state
 
     cpdef setDT(self, float dt):
         self.dt = dt

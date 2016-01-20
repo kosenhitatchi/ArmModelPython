@@ -27,6 +27,7 @@ cdef class Arm:
     cpdef setDT(self, float dt)
     cpdef np.ndarray get_dotq_0(self)
     cpdef set_dotq_0(self, np.ndarray value)
+    cpdef np.ndarray getState(self)
     cpdef np.ndarray computeNextState(self, np.ndarray U, np.ndarray state)
     cdef np.ndarray jointStop(self,np.ndarray q)
     # @todo : define the proper output type

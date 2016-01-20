@@ -156,7 +156,7 @@ class TrajMaker:
         while coordHand[1] < self.rs.YTarget and i < self.rs.numMaxIter:
             stepStore = []
             #computation of the next muscular activation vector using the controller theta
-            #print ("state :",self.arm.state)
+            #print ("state :",self.arm.getState())
 
             U = self.controller.computeOutput(estimState)
 
@@ -166,10 +166,10 @@ class TrajMaker:
                 Unoisy = getNoisyCommand(U,self.arm.musclesP.knoiseU)
                 Unoisy = muscleFilter(Unoisy)
             #computation of the arm state
-            realNextState = self.arm.computeNextState(Unoisy, self.arm.state)
+            realNextState = self.arm.computeNextState(Unoisy, self.arm.getState())
  
             #computation of the approximated state
-            tmpState = self.arm.state
+            tmpState = self.arm.getState()
 
             if det:
                 estimNextState = realNextState
