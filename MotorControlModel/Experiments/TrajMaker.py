@@ -20,7 +20,6 @@ from Regression.RBFN import rbfn
 
 from Utils.FileReading import getStateAndCommandData, dicToArray,stateAndCommandDataFromTrajs,loadStateCommandPairsByStartCoords
 
-from CostComputation import CostComputation
 from StateEstimator import StateEstimator
 
 from GlobalVariables import BrentTrajectoriesFolder,pathDataFolder,det 

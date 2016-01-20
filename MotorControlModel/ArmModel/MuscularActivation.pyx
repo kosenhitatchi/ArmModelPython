@@ -34,7 +34,7 @@ cpdef np.ndarray[np.uint8_t] getNoisyCommand(list U, float knoiseU):
     return np.array(UnoiseTmp)
 
 #cdef : fonction only accessible by cython
-cdef list muscleFilter(list UnoiseTmp):
+cpdef list muscleFilter(list UnoiseTmp):
     '''
     Makes sure that the muscular activation is between 0 and 1
 
