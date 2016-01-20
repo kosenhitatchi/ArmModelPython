@@ -6,7 +6,7 @@ Ici se trouve les methodes pour compiler du code cython
 ex : Cythonize_ArmModel.py
 
 	ici 
-		ext_modules = cythonize("MotorControlModel/ArmModel/*.pyx"	
+		ext_modules = cythonize("MotorControlModel/ArmModel/*.pyx")	
 
 	Devrais avoir un lien relatif.
 	Cepandant lorsque l'on lance :
@@ -16,7 +16,7 @@ ex : Cythonize_ArmModel.py
 
 ---------------Log des erreurs pouvant être à une dues à la compilation -------------------------
 
-# 1 : Probleme de référencement d'un module et de ses dependances :
+# 1 (plus a jour au 20/01/2016 ): Probleme de référencement d'un module et de ses dependances :
 	Les fichiers issues de la compilation ne se trouvant pas dans le bon dossier, il seras impossible pour cython de les importer (d'ou une "ImportError: No module named ...").
 
 	ex :    
