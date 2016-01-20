@@ -33,6 +33,7 @@ cdef class MusclesParameters:
         print("init MusclesParameters")
 
         pathSetupFile = pathWorkingDirectory + "/ArmModel/Setup/Muscles.params"
+        #pathSetupFile = "ArmModel/Setup/Muscles.params"
         self.pathSetupFile = pathSetupFile;
         #print(self.pathSetupFile)
 

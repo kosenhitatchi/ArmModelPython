@@ -14,14 +14,11 @@ cimport numpy as np # import special compile-time information about the numpy mo
 
 import math
 
-# cimport Arm
-# from Arm cimport Arm
 
-from ArmModel import MusclesParameters
-from MusclesParameters cimport MusclesParameters as MusclesParam
+from ArmModel.MusclesParameters cimport MusclesParameters
 
-from ArmModel import ArmParameters
-from ArmParameters cimport ArmParameters as ArmParam
+from ArmModel.ArmParameters cimport ArmParameters
+
 
 # @todo : define the proper output type
 cpdef getDotQAndQFromStateVector( np.ndarray state):
@@ -51,8 +48,8 @@ cdef class Arm:
         print("init Arm")
         self.__dotq0 = np.array([0.,0.])
 
-        self.armP = ArmParam.ArmParameters()
-        self.musclesP = MusclesParam.MusclesParameters()
+        self.armP = ArmParameters()
+        self.musclesP = MusclesParameters()
 
     cpdef setState(self, np.ndarray state):
         self.state = state

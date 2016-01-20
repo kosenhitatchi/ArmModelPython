@@ -34,6 +34,7 @@ cdef class ArmParameters:
         '''
         print("init ArmParameters")
         pathSetupFile = pathWorkingDirectory + "/ArmModel/Setup/Arm.params"
+        #pathSetupFile = "ArmModel/Setup/Arm.params"
         self.pathSetupFile = pathSetupFile;
         #print(self.pathSetupFile)
 
