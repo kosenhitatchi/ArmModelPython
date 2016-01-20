@@ -51,20 +51,38 @@ cdef class Arm:
         self.armP = ArmParameters()
         self.musclesP = MusclesParameters()
 
+    # --- state ---
+
     cpdef setState(self, np.ndarray state):
         self.state = state
 
     cpdef np.ndarray getState(self):
         return self.state
 
-    cpdef setDT(self, float dt):
-        self.dt = dt
+    # --- __dotq0 ---
 
     cpdef np.ndarray get_dotq_0(self):
         return np.array(self.__dotq0)
 
-    cpdef set_dotq_0(self, np.ndarray value):
-        self.__dotq0 = value
+    cpdef set_dotq_0(self,np.ndarray dotq_0):
+        self.__dotq0 = dotq_0
+
+    # --- dt ---
+
+    cpdef setDT(self, float dt):
+        self.dt = dt
+
+    cpdef float getDT(self):
+        return self.dt
+
+    # --- ArmParameters &  MusclesParameters ---
+
+    cdef ArmParameters get_ArmParameters(self):
+        return self.armP
+
+    cdef MusclesParameters get_MusclesParameters(self):
+        return self.musclesP
+
 
     cpdef np.ndarray computeNextState(self, np.ndarray U, np.ndarray state):
         '''
