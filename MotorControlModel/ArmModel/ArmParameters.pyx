@@ -94,7 +94,7 @@ cdef class ArmParameters:
         #line 12, Damping term k9
         cdef float b4 = float((allsByLign[11].split(":"))[1])
         #matrix definition
-        self.B = np.array([[b1,b2],[b3,b4]])
+        self.B = np.array([[b1,b2],[b3,b4]],dtype = np.float_)
 
         # print ("B")
         # print (self.B)
@@ -131,7 +131,7 @@ cdef class ArmParameters:
         #line 24, Moment arm matrix, a12
         cdef float a12 = float((allsByLign[23].split(":"))[1])
         #matrix definition
-        self.At = np.array([[a1,a2,a3,a4,a5,a6], [a7,a8,a9,a10,a11,a12]])
+        self.At = np.array([[a1,a2,a3,a4,a5,a6], [a7,a8,a9,a10,a11,a12]],dtype = np.float_)
 
         # print ("At")
         # print (self.At)

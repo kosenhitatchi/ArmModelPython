@@ -30,8 +30,8 @@ cpdef getDotQAndQFromStateVector(np.ndarray state):
       Outputs:    -dotq: numpy array
       -q: numpy array
       '''
-      cdef np.ndarray dotq = np.array([state[0], state[1]])
-      cdef np.ndarray q = np.array([state[2], state[3]])
+      cdef np.ndarray dotq = np.array([state[0], state[1]],dtype = np.float_)
+      cdef np.ndarray q = np.array([state[2], state[3]],dtype = np.float_)
       cdef np.ndarray dt
       return dotq,q
 
@@ -46,7 +46,7 @@ cdef class Arm:
 
     def __init__(self):
         print("init Arm")
-        self.__dotq0 = np.array([0.,0.])
+        self.__dotq0 = np.array([0.,0.],dtype = np.float_)
 
         self.armP = ArmParameters()
         self.musclesP = MusclesParameters()
@@ -99,11 +99,11 @@ cdef class Arm:
         # print ("U :",U)
         # print ("q:",q)
         # print ("dotq:",dotq)
-        cdef np.ndarray M = np.array([[self.armP.k1+2*self.armP.k2*math.cos(q[1]),self.armP.k3+self.armP.k2*math.cos(q[1])],[self.armP.k3+self.armP.k2*math.cos(q[1]),self.armP.k3]])
+        cdef np.ndarray M = np.array([[self.armP.k1+2*self.armP.k2*math.cos(q[1]),self.armP.k3+self.armP.k2*math.cos(q[1])],[self.armP.k3+self.armP.k2*math.cos(q[1]),self.armP.k3]],dtype = np.float_)
         # print ("M:",M)
         cdef np.ndarray Minv = np.linalg.inv(M)
         # print ("Minv:",Minv)
-        cdef np.ndarray C = np.array([-dotq[1]*(2*dotq[0]+dotq[1])*self.armP.k2*math.sin(q[1]),(dotq[0]**2)*self.armP.k2*math.sin(q[1])])
+        cdef np.ndarray C = np.array([-dotq[1]*(2*dotq[0]+dotq[1])*self.armP.k2*math.sin(q[1]),(dotq[0]**2)*self.armP.k2*math.sin(q[1])],dtype = np.float_)
         # print ("C:",C)
         #the commented version uses a non null stiffness for the muscles
         #beware of dot product Kraid times q: q may not be the correct vector/matrix
@@ -127,7 +127,7 @@ cdef class Arm:
         q += dotq*self.dt
         #save the real state to compute the state at the next step with the real previous state
         q = self.jointStop(q)
-        cdef np.ndarray nextState = np.array([dotq[0], dotq[1], q[0], q[1]])
+        cdef np.ndarray nextState = np.array([dotq[0], dotq[1], q[0], q[1]],dtype = np.float_)
 
         return nextState
 
@@ -172,7 +172,7 @@ cdef class Arm:
                     [-self.armP.l1*np.sin(q[0]) - self.armP.l2*np.sin(q[0] + q[1]),
                      -self.armP.l2*np.sin(q[0] + q[1])],
                     [self.armP.l1*np.cos(q[0]) + self.armP.l2*np.cos(q[0] + q[1]),
-                     self.armP.l2*np.cos(q[0] + q[1])]])
+                     self.armP.l2*np.cos(q[0] + q[1])]],dtype = np.float_)
         return J
 
     cpdef list mgdEndEffector(self, np.ndarray q):

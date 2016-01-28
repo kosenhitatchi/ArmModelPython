@@ -44,21 +44,21 @@ cdef class MusclesParameters:
         #Hogan parameters
         self.GammaMax = 2
         self.K = (2*self.GammaMax)/math.pi#stiffness
-        self.Gamma_H = np.array([[0],[0]])#hogan torque initialization
+        self.Gamma_H = np.array([[0],[0]],dtype = np.float_)#hogan torque initialization
         #stiffness matrix (null)
-        self.Knulle = np.mat([(0, 0, 0, 0, 0, 0),(0, 0, 0, 0, 0, 0)])
+        self.Knulle = np.mat([(0, 0, 0, 0, 0, 0),(0, 0, 0, 0, 0, 0)],dtype = np.float_)
         #stiffness matrix (low)
         self.Kp1 = 10.
         self.Kp2 = 10.
         self.KP1 = 10.
         self.KP2 = 10.
-        self.Kraid = np.mat([(self.KP1,self.KP1,0,0,self.Kp1,self.Kp1),(0,0,self.Kp2,self.Kp2,self.KP2,self.KP2)])
+        self.Kraid = np.mat([(self.KP1,self.KP1,0,0,self.Kp1,self.Kp1),(0,0,self.Kp2,self.Kp2,self.KP2,self.KP2)],dtype = np.float)
         #stiffness matrix (high)
         self.KP22 = (80*self.GammaMax)/math.pi
         self.Kp22=(60*self.GammaMax)/math.pi
         self.KP11=(200*self.GammaMax)/math.pi
         self.Kp11=(100*self.GammaMax)/math.pi
-        self.Kgrand = np.mat([(self.KP11,self.KP11,0,0,self.Kp11,self.Kp11),(0,0,self.Kp22,self.Kp22,self.KP22,self.KP22)])
+        self.Kgrand = np.mat([(self.KP11,self.KP11,0,0,self.Kp11,self.Kp11),(0,0,self.Kp22,self.Kp22,self.KP22,self.KP22)],dtype = np.float_)
         #Proportional gain
         self.Kp = 10 # Arbitrary value
         #Derivative gain
@@ -100,11 +100,11 @@ cdef class MusclesParameters:
         cdef float u4 = 0
         cdef float u5 = 0
         cdef float u6 = 0
-        self.U0 = np.array([[u1],[u2],[u3],[u4],[u5],[u6]])
+        self.U0 = np.array([[u1],[u2],[u3],[u4],[u5],[u6]],dtype = np.float_)
 
     cpdef activationVectorUse(self, u1, u2, u3, u4, u5, u6):
         '''
         Builds the muscular activation vector from its 6 components
         '''
-        cdef np.ndarray U = np.array([[u1],[u2],[u3],[u4],[u5],[u6]])
+        cdef np.ndarray U = np.array([[u1],[u2],[u3],[u4],[u5],[u6]],dtype = np.float_)
         return U

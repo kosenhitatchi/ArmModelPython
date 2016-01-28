@@ -50,3 +50,4 @@ cdef class MusclesParameters:
     cdef fmaxMatrix(self)
     cdef activationVectorInit(self)
     cpdef activationVectorUse(self, u1, u2, u3, u4, u5, u6)
+    # cpdef np.ndarray activationVectorUse(self, u1, u2, u3, u4, u5, u6)

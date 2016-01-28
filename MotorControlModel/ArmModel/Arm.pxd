@@ -20,7 +20,6 @@ cdef class Arm:
     cdef ArmParameters armP
     cdef MusclesParameters musclesP
 
-
     # Function
 
     cpdef setState(self, np.ndarray state)
@@ -38,6 +37,7 @@ cdef class Arm:
 
     cpdef np.ndarray computeNextState(self, np.ndarray U, np.ndarray state)
     cdef np.ndarray jointStop(self,np.ndarray q)
+
     # @todo : define the proper output type
     cpdef mgdFull(self, np.ndarray q)
     cpdef np.ndarray jacobian(self, np.ndarray q)
