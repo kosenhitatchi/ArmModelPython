@@ -6,10 +6,10 @@ import numpy
 
 
 extensions = [
-   Extension("ArmModel.MusclesParameters", ["ArmModel/MusclesParameters.pyx"]),
-   Extension("ArmModel.MuscularActivation", ["ArmModel/MuscularActivation.pyx"]),
-   Extension("ArmModel.ArmParameters", ["ArmModel/ArmParameters.pyx"]),
-   Extension("ArmModel.Arm", ["ArmModel/Arm.pyx"]),
+   Extension("ArmModel.MusclesParameters", ["ArmModel/MusclesParameters.pyx"],extra_compile_args=["-w"]),
+   Extension("ArmModel.MuscularActivation", ["ArmModel/MuscularActivation.pyx"],extra_compile_args=["-w"]),
+   Extension("ArmModel.ArmParameters", ["ArmModel/ArmParameters.pyx"],extra_compile_args=["-w"]),
+   Extension("ArmModel.Arm", ["ArmModel/Arm.pyx"],extra_compile_args=["-w"]),
     ]
     # Des warning apparaitres c'est normal cella est dus a la compilation de numpy (un ticket a ete ouvert)
 
