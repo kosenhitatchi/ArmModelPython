@@ -1,0 +1,138 @@
+Error compiling Cython file:
+------------------------------------------------------------
+...
+import numpy as np
+cimport numpy as np # import special compile-time information about the numpy module for cython
+
+
+from ArmModel.MusclesParameters cimport MusclesParameters
+^
+------------------------------------------------------------
+
+Arm.pxd:5:0: 'ArmModel/MusclesParameters.pxd' not found
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+import numpy as np
+cimport numpy as np # import special compile-time information about the numpy module for cython
+
+
+from ArmModel.MusclesParameters cimport MusclesParameters
+^
+------------------------------------------------------------
+
+Arm.pxd:5:0: 'ArmModel/MusclesParameters/MusclesParameters.pxd' not found
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+cimport numpy as np # import special compile-time information about the numpy module for cython
+
+
+from ArmModel.MusclesParameters cimport MusclesParameters
+
+from ArmModel.ArmParameters cimport ArmParameters
+^
+------------------------------------------------------------
+
+Arm.pxd:7:0: 'ArmModel/ArmParameters.pxd' not found
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+cimport numpy as np # import special compile-time information about the numpy module for cython
+
+
+from ArmModel.MusclesParameters cimport MusclesParameters
+
+from ArmModel.ArmParameters cimport ArmParameters
+^
+------------------------------------------------------------
+
+Arm.pxd:7:0: 'ArmModel/ArmParameters/ArmParameters.pxd' not found
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+
+    cdef np.ndarray state #numpy array, state vector
+    cdef np.ndarray __dotq0
+
+    cdef float dt # Pas de temps utilise pour l'experimentation
+    cdef ArmParameters armP
+        ^
+------------------------------------------------------------
+
+Arm.pxd:26:9: 'ArmParameters' is not a type identifier
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+    cdef np.ndarray state #numpy array, state vector
+    cdef np.ndarray __dotq0
+
+    cdef float dt # Pas de temps utilise pour l'experimentation
+    cdef ArmParameters armP
+    cdef MusclesParameters musclesP
+        ^
+------------------------------------------------------------
+
+Arm.pxd:27:9: 'MusclesParameters' is not a type identifier
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+
+    cpdef setDT(self, float dt)
+    cpdef float getDT(self)
+
+
+    cdef ArmParameters get_ArmParameters(self)
+        ^
+------------------------------------------------------------
+
+Arm.pxd:41:9: 'ArmParameters' is not a type identifier
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+    cpdef setDT(self, float dt)
+    cpdef float getDT(self)
+
+
+    cdef ArmParameters get_ArmParameters(self)
+    cdef MusclesParameters get_MusclesParameters(self)
+        ^
+------------------------------------------------------------
+
+Arm.pxd:42:9: 'MusclesParameters' is not a type identifier
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+    cpdef float getDT(self):
+        return self.dt
+
+    # --- ArmParameters &  MusclesParameters ---
+
+    cdef ArmParameters get_ArmParameters(self):
+        ^
+------------------------------------------------------------
+
+Arm.pyx:81:9: 'ArmParameters' is not a type identifier
+
+Error compiling Cython file:
+------------------------------------------------------------
+...
+    # --- ArmParameters &  MusclesParameters ---
+
+    cdef ArmParameters get_ArmParameters(self):
+        return self.armP
+
+    cdef MusclesParameters get_MusclesParameters(self):
+        ^
+------------------------------------------------------------
+
+Arm.pyx:84:9: 'MusclesParameters' is not a type identifier
+

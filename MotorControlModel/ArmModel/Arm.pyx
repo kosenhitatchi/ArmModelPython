@@ -21,7 +21,7 @@ from ArmModel.ArmParameters cimport ArmParameters
 
 
 # @todo : define the proper output type
-cpdef getDotQAndQFromStateVector(np.ndarray state):
+cpdef getDotQAndQFromStateVector(np.ndarray[np.float_t, ndim=1]  state):
       '''
       Returns dotq and q from the state vector state
 
@@ -30,9 +30,10 @@ cpdef getDotQAndQFromStateVector(np.ndarray state):
       Outputs:    -dotq: numpy array
       -q: numpy array
       '''
-      cdef np.ndarray dotq = np.array([state[0], state[1]],dtype = np.float_)
-      cdef np.ndarray q = np.array([state[2], state[3]],dtype = np.float_)
-      cdef np.ndarray dt
+
+      cdef np.ndarray[np.float_t, ndim=1] dotq = np.array([state[0], state[1]],dtype = np.float_)
+      cdef np.ndarray[np.float_t, ndim=1] q = np.array([state[2], state[3]],dtype = np.float_)
+
       return dotq,q
 
 #-----------------------------------------------------------------------------
@@ -53,15 +54,15 @@ cdef class Arm:
 
     # --- state ---
 
-    cpdef setState(self, np.ndarray state):
+    cpdef setState(self, np.ndarray[np.float_t, ndim=1]  state):
         self.state = state
 
-    cpdef np.ndarray getState(self):
+    cpdef np.ndarray[np.float_t, ndim=1] getState(self):
         return self.state
 
     # --- __dotq0 ---
 
-    cpdef np.ndarray get_dotq_0(self):
+    cpdef np.ndarray[np.float_t, ndim=1] get_dotq_0(self):
         return np.array(self.__dotq0)
 
     cpdef set_dotq_0(self,np.ndarray dotq_0):
@@ -84,7 +85,7 @@ cdef class Arm:
         return self.musclesP
 
 
-    cpdef np.ndarray computeNextState(self, np.ndarray U, np.ndarray state):
+    cpdef np.ndarray[np.float_t, ndim=1] computeNextState(self, np.ndarray U, np.ndarray[np.float_t, ndim=1]  state):
         '''
         Computes the next state resulting from the direct dynamic model of the arm given the muscles activation vector U
 
@@ -94,16 +95,16 @@ cdef class Arm:
         Output:    -state: (4,1) numpy array, the resulting state
         '''
         #print ("state:", state)
-        cdef np.ndarray dotq, q
+        cdef np.ndarray[np.float_t, ndim=1] dotq, q
         dotq,q= getDotQAndQFromStateVector(state)
         # print ("U :",U)
         # print ("q:",q)
         # print ("dotq:",dotq)
-        cdef np.ndarray M = np.array([[self.armP.k1+2*self.armP.k2*math.cos(q[1]),self.armP.k3+self.armP.k2*math.cos(q[1])],[self.armP.k3+self.armP.k2*math.cos(q[1]),self.armP.k3]],dtype = np.float_)
+        cdef np.ndarray[np.float_t, ndim=2] M = np.array([[self.armP.k1+2*self.armP.k2*math.cos(q[1]),self.armP.k3+self.armP.k2*math.cos(q[1])],[self.armP.k3+self.armP.k2*math.cos(q[1]),self.armP.k3]],dtype = np.float_)
         # print ("M:",M)
-        cdef np.ndarray Minv = np.linalg.inv(M)
+        cdef np.ndarray[np.float_t, ndim=2] Minv = np.linalg.inv(M)
         # print ("Minv:",Minv)
-        cdef np.ndarray C = np.array([-dotq[1]*(2*dotq[0]+dotq[1])*self.armP.k2*math.sin(q[1]),(dotq[0]**2)*self.armP.k2*math.sin(q[1])],dtype = np.float_)
+        cdef np.ndarray[np.float_t, ndim=1] C = np.array([-dotq[1]*(2*dotq[0]+dotq[1])*self.armP.k2*math.sin(q[1]),(dotq[0]**2)*self.armP.k2*math.sin(q[1])],dtype = np.float_)
         # print ("C:",C)
         #the commented version uses a non null stiffness for the muscles
         #beware of dot product Kraid times q: q may not be the correct vector/matrix
@@ -111,27 +112,27 @@ cdef class Arm:
         #Gamma = np.dot((np.dot(self.armP.At, self.musclesP.fmax)-np.dot(self.musclesP.Knulle, Q)), U)
         #above Knulle is null, so it can be simplified
 
-        cdef np.ndarray Gamma = np.dot(np.dot(self.armP.At, self.musclesP.fmax), U)
+        cdef np.ndarray[np.float_t, ndim=1]  Gamma = np.dot(np.dot(self.armP.At, self.musclesP.fmax), U)
         # print ("Gamma:",Gamma)
 
         # Gamma = np.dot(armP.At, np.dot(musclesP.fmax,U))
         # #computes the acceleration ddotq and integrates
 
-        cdef np.ndarray  b = np.dot(self.armP.B, dotq)
+        cdef np.ndarray[np.float_t, ndim=1] b = np.dot(self.armP.B, dotq)
         #print ("b:",b)
 
-        cdef np.ndarray ddotq = np.dot(Minv,Gamma - C - b)
+        cdef np.ndarray[np.float_t, ndim=1] ddotq = np.dot(Minv,Gamma - C - b)
         #print ("ddotq",ddotq)
 
         dotq += ddotq*self.dt
         q += dotq*self.dt
         #save the real state to compute the state at the next step with the real previous state
         q = self.jointStop(q)
-        cdef np.ndarray nextState = np.array([dotq[0], dotq[1], q[0], q[1]],dtype = np.float_)
+        cdef np.ndarray[np.float_t, ndim=1] nextState = np.array([dotq[0], dotq[1], q[0], q[1]],dtype = np.float_)
 
         return nextState
 
-    cdef np.ndarray jointStop(self,np.ndarray q):
+    cdef np.ndarray[np.float_t, ndim=1] jointStop(self,np.ndarray[np.float_t, ndim=1] q):
         '''
         Articular stop for the human arm
         The stops are included in the arm parameters file
@@ -153,7 +154,7 @@ cdef class Arm:
         return q
 
     # @todo : define the proper output type
-    cpdef mgdFull(self, np.ndarray q):
+    cpdef tuple mgdFull(self, np.ndarray q):
         '''
         Direct geometric model of the arm
 
@@ -167,15 +168,16 @@ cdef class Arm:
         cdef list coordHand = [self.armP.l1*np.cos(q[0])+self.armP.l2*np.cos(q[0] + q[1]), self.armP.l1*np.sin(q[0]) + self.armP.l2*np.sin(q[0] + q[1])]
         return coordElbow, coordHand
 
-    cpdef np.ndarray jacobian(self, np.ndarray q):
-        cdef np.ndarray J = np.array([
+    cpdef np.ndarray[np.float_t, ndim=2] jacobian(self, np.ndarray[np.float_t, ndim=1] q):
+
+        cdef np.ndarray[np.float_t, ndim=2] J = np.array([
                     [-self.armP.l1*np.sin(q[0]) - self.armP.l2*np.sin(q[0] + q[1]),
                      -self.armP.l2*np.sin(q[0] + q[1])],
                     [self.armP.l1*np.cos(q[0]) + self.armP.l2*np.cos(q[0] + q[1]),
                      self.armP.l2*np.cos(q[0] + q[1])]],dtype = np.float_)
         return J
 
-    cpdef list mgdEndEffector(self, np.ndarray q):
+    cpdef list mgdEndEffector(self, np.ndarray[np.float_t, ndim=1] q):
           '''
           Direct geometric model of the arm
 
@@ -187,7 +189,7 @@ cdef class Arm:
           cdef list coordHand = [self.armP.l1*np.cos(q[0])+self.armP.l2*np.cos(q[0] + q[1]), self.armP.l1*np.sin(q[0]) + self.armP.l2*np.sin(q[0] + q[1])]
           return coordHand
 
-    cpdef mgi(self, float xi, float yi):
+    cpdef tuple mgi(self, float xi, float yi):
           '''
           Inverse geometric model of the arm
 
@@ -205,8 +207,8 @@ cdef class Arm:
             c = self.armP.l1 + self.armP.l2*(math.cos(q2))
             d = self.armP.l2*(math.sin(q2))
             q1 = math.atan2(yi,xi) - math.atan2(d,c)
-            return q1, q2
+            return (q1, q2)
           except ValueError:
             print("forbidden value")
             print xi,yi
-            return "None"
+            return None

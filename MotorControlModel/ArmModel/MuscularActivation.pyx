@@ -13,7 +13,7 @@ import numpy as np
 cimport numpy as np # import special compile-time information about the numpy module for cython
 
 #cpdef : fonction accessible by python and cython
-cpdef np.ndarray[np.uint8_t] getNoisyCommand(list U, float knoiseU):
+cpdef np.ndarray[np.float_t] getNoisyCommand(list U, float knoiseU):
     '''
     Computes the next muscular activation vector U
 
@@ -31,10 +31,12 @@ cpdef np.ndarray[np.uint8_t] getNoisyCommand(list U, float knoiseU):
     #check if the muscular activation are normed, ie between 0 and 1
     UnoiseTmp = muscleFilter(UnoiseTmp)
     #put U in column vector form
-    return np.array(UnoiseTmp)
+    cdef np.ndarray[np.float_t, ndim=1] NoisyCommand = np.array(UnoiseTmp,dtype = np.float_)
+
+    return NoisyCommand
 
 #cdef : fonction only accessible by cython
-cpdef np.ndarray[np.uint8_t] muscleFilter(list UnoiseTmp):
+cpdef np.ndarray[np.float_t] muscleFilter(list UnoiseTmp):
     '''
     Makes sure that the muscular activation is between 0 and 1
 
@@ -43,15 +45,17 @@ cpdef np.ndarray[np.uint8_t] muscleFilter(list UnoiseTmp):
     Output:		-UnoiseTmp: muscular activation vector
     '''
     cdef Py_ssize_t x,size
-    size = len(UnoiseTmp)
+    size = len(UnoiseTmp) #  nb muscles in the model (here 6)
     for i in range(size):
        if UnoiseTmp[i] < 0:
-           #print "U unfiltered :", UnoiseTmp[i]
+           # print "U unfiltered :", UnoiseTmp[i]
            UnoiseTmp[i] = 0
        elif UnoiseTmp[i] > 1:
            #print "U unfiltered :", UnoiseTmp[i]
            UnoiseTmp[i] = 1
-    return np.array(UnoiseTmp)
+
+    cdef np.ndarray[np.float_t, ndim=1] activationVector = np.array(UnoiseTmp,dtype = np.float_)
+    return activationVector
 
 
 

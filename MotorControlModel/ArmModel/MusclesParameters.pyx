@@ -102,9 +102,9 @@ cdef class MusclesParameters:
         cdef float u6 = 0
         self.U0 = np.array([[u1],[u2],[u3],[u4],[u5],[u6]],dtype = np.float_)
 
-    cpdef activationVectorUse(self, u1, u2, u3, u4, u5, u6):
+    cpdef np.ndarray[np.float_t, ndim=2] activationVectorUse(self, u1, u2, u3, u4, u5, u6):
         '''
         Builds the muscular activation vector from its 6 components
         '''
-        cdef np.ndarray U = np.array([[u1],[u2],[u3],[u4],[u5],[u6]],dtype = np.float_)
+        cdef np.ndarray[np.float_t, ndim=2] U = np.array([[u1],[u2],[u3],[u4],[u5],[u6]],dtype = np.float_)
         return U
